@@ -9,15 +9,15 @@ $ mkdir -p ~/.docker/ssl
 
 #### ===> Create and sign a CA key and certificate and copy the CA certificate into /etc/docker/ssl
 ```sh
-$ openssl genrsa -out ~/.docker/ca-key.pem 2048
+$ openssl genrsa -out ~/.docker/ssl/ca-key.pem 2048
 .+++
 ..........................................................................................................+++
 e is 65537 (0x10001)
 
-$ openssl req -x509 -new -nodes -key ~/.docker/ca-key.pem \
-  -days 10000 -out ~/.docker/ca.pem -subj '/CN=docker-CA'
+$ openssl req -x509 -new -nodes -key ~/.docker/ssl/ca-key.pem \
+  -days 10000 -out ~/.docker/ssl/ca.pem -subj '/CN=docker-CA'
 
-$ sudo cp ~/.docker/ca.pem /etc/docker/ssl
+$ sudo cp ~/.docker/ssl/ca.pem /etc/docker/ssl
 ```
 
 #### ===> Configuration file for the Docker client ~/.docker/ssl/openssl.cnf
@@ -50,17 +50,17 @@ IP.2 = 127.0.0.1
 
 #### ===> Create and sign a certificate for the client
 ```sh
-$ openssl genrsa -out ~/.docker/key.pem 2048
+$ openssl genrsa -out ~/.docker/ssl/key.pem 2048
 ....................................+++
 .............+++
 e is 65537 (0x10001)
 
-$ openssl req -new -key ~/.docker/key.pem -out ~/.docker/cert.csr \
+$ openssl req -new -key ~/.docker/ssl/key.pem -out ~/.docker/ssl/cert.csr \
   -subj '/CN=docker-client' -config ~/.docker/ssl/openssl.cnf
 
-$ openssl x509 -req -in ~/.docker/cert.csr -CA ~/.docker/ca.pem \
-  -CAkey ~/.docker/ca-key.pem -CAcreateserial \
-  -out ~/.docker/cert.pem -days 365 -extensions v3_req \
+$ openssl x509 -req -in ~/.docker/ssl/cert.csr -CA ~/.docker/ssl/ca.pem \
+  -CAkey ~/.docker/ssl/ca-key.pem -CAcreateserial \
+  -out ~/.docker/ssl/cert.pem -days 365 -extensions v3_req \
   -extfile ~/.docker/ssl/openssl.cnf
 Signature ok
 subject=/CN=docker-client
@@ -78,8 +78,8 @@ $ sudo openssl req -new -key /etc/docker/ssl/key.pem \
   -out /etc/docker/ssl/cert.csr \
   -subj '/CN=docker-server' -config /etc/docker/ssl/openssl.cnf
 
-$ sudo openssl x509 -req -in /etc/docker/ssl/cert.csr -CA ~/.docker/ca.pem \
-  -CAkey ~/.docker/ca-key.pem -CAcreateserial \
+$ sudo openssl x509 -req -in /etc/docker/ssl/cert.csr -CA ~/.docker/ssl/ca.pem \
+  -CAkey ~/.docker/ssl/ca-key.pem -CAcreateserial \
   -out /etc/docker/ssl/cert.pem -days 365 -extensions v3_req \
   -extfile /etc/docker/ssl/openssl.cnf
 Signature ok
