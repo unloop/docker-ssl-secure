@@ -56,12 +56,12 @@ $ openssl genrsa -out ~/.docker/key.pem 2048
 e is 65537 (0x10001)
 
 $ openssl req -new -key ~/.docker/key.pem -out ~/.docker/cert.csr \
-  -subj '/CN=docker-client' -config ~/.docker/openssl.cnf
+  -subj '/CN=docker-client' -config ~/.docker/ssl/openssl.cnf
 
 $ openssl x509 -req -in ~/.docker/cert.csr -CA ~/.docker/ca.pem \
   -CAkey ~/.docker/ca-key.pem -CAcreateserial \
   -out ~/.docker/cert.pem -days 365 -extensions v3_req \
-  -extfile ~/.docker/openssl.cnf
+  -extfile ~/.docker/ssl/openssl.cnf
 Signature ok
 subject=/CN=docker-client
 Getting CA Private Key
